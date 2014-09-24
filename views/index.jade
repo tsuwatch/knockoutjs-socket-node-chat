@@ -1,11 +1,21 @@
 extends layout
 
 block content
-  h1= title
-  ul#messages(data-bind="foreach: messages")
-    li.message
-      span(data-bind="text: text")
-
-  form#sendMessage()
-    input(autocomplete='off')
-    button Send
+  div.container
+    h1= title
+    div.col-lg-8
+      h2 Messages
+      div.message-box
+        ul#messages(data-bind="foreach: messages")
+          li.message
+            span(data-bind="text: text")
+    div.col-lg-4
+      h2 Users
+  div.message-bar
+    div.container
+      form.message-form(role="form")
+        div.row
+          div.col-lg-8
+            input.form-control(autocomplete='off', type="text")
+          div.col-lg-4
+            button.btn.btn-success Send
