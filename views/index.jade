@@ -2,7 +2,10 @@ extends layout
 
 block content
   h1= title
-  ul#messages
-  form(action='')
-    input#m(autocomplete='off')/
+  ul#messages(data-bind="foreach: messages")
+    li.message
+      span(data-bind="text: text")
+
+  form#sendMessage()
+    input(autocomplete='off')
     button Send

@@ -6,14 +6,33 @@ html
   body
     block content
     script(src='/socket.io/socket.io.js')
+    script(src='/javascripts/knockout-3.2.0.js')
     script(src='http://code.jquery.com/jquery-1.11.1.js')
     script.
       var socket = io();
+      function Message(data) {
+        this.text = ko.observable(data);
+      }
+
+      function ChatViewModel() {
+        var self = this;
+
+        self.messages = ko.observableArray([]);
+
+        self.pushMessage = function(msg) {
+          self.messages.push(new Message(msg));
+        }
+      }
+
+      var chatModel = new ChatViewModel();
+      ko.applyBindings(chatModel);
+
+      
       $('form').submit(function() {
-        socket.emit('message', $('#m').val());
-        $('#m').val('');
+        socket.emit('message', $('input').val());
+        $('input').val('');
         return false;
       });
       socket.on('message', function(msg) {
-        $('#messages').append($('<li>').text(msg));
+        chatModel.pushMessage(msg)
       });
