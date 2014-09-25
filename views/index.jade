@@ -13,9 +13,9 @@ block content
       h2 Users
   div.message-bar
     div.container
-      form.message-form(role="form")
+      form.message-form(data-bind="submit: submitMessage", role="form")
         div.row
           div.col-lg-8
-            input.form-control(autocomplete='off', type="text")
+            input.form-control(autocomplete='off', type="text", data-bind="value: message, valueUpdate: 'afterkeydown'")
           div.col-lg-4
             button.btn.btn-success Send
