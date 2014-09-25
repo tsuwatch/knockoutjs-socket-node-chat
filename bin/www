@@ -8,18 +8,33 @@ var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
 
+var totalNumUsers = 0;
+var users = {}
+
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
   
   console.log('a user connected');
 
+  socket.emit('login', users);
+  socket.emit('message', { 'nickname': 'SYSTEM', 'message': 'you have connected' });
+
+  ++totalNumUsers;
+  socket.nickname = "Guest " + totalNumUsers;
+  users[socket.nickname] = socket.nickname;
+  io.emit('new user', socket.nickname);
+  socket.broadcast.emit('message', { 'nickname': 'SYSTEM', 'message': socket.nickname + ' has connected' });
+
   socket.on('message', function(msg) {
     console.log('message: ' + msg);
-    io.emit('message', msg);
+    io.emit('message', { 'nickname': socket.nickname, 'message': msg });
   });
 
   socket.on('disconnect', function() {
     console.log('user disconnected');
+    delete users[socket.nickname];
+    socket.broadcast.emit('remove user', socket.nickname);
+    socket.broadcast.emit('message', { 'nickname': 'SYSTEM', 'message': socket.nickname + ' has disconnected' });
   });
 
 });

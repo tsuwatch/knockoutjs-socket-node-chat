@@ -12,7 +12,12 @@ html
     script.
       var socket = io();
       function Message(data) {
-        this.text = ko.observable(data);
+        this.nickname = ko.observable(data.nickname);
+        this.message = ko.observable(data.message);
+      }
+
+      function User(data) {
+        this.nickname = ko.observable(data);
       }
 
       function ChatViewModel() {
@@ -20,6 +25,9 @@ html
 
         self.messages = ko.observableArray([]);
         self.message = ko.observable("");
+
+        self.users = ko.observableArray([]);
+        self.user = ko.observable("");
 
         self.submitMessage = function() {
           if (self.message() === "") {
@@ -32,11 +40,37 @@ html
         self.pushMessage = function(msg) {
           self.messages.push(new Message(msg));
         }
+
+        self.pushUser = function(nickname) {
+          self.users.push(new User(nickname));
+        }
+
+        self.loadUsers = function(users) {
+          $.each(users, function(key ,value) {
+            self.pushUser(value);
+          });
+        }
+
+        self.removeUser = function(nickname) {
+          self.users.remove(function(user) { return user.nickname() == nickname });
+        }
       }
 
       var chatModel = new ChatViewModel();
       ko.applyBindings(chatModel);
 
-      socket.on('message', function(msg) {
-        chatModel.pushMessage(msg)
+      socket.on('login', function(users) {
+        chatModel.loadUsers(users);
+      });
+
+      socket.on('message', function(data) {
+        chatModel.pushMessage(data)
+      });
+
+      socket.on('new user', function(nickname) {
+        chatModel.pushUser(nickname);
+      });
+      
+      socket.on('remove user', function(nickname) {
+        chatModel.removeUser(nickname);
       });

@@ -8,9 +8,14 @@ block content
       div.message-box
         ul#messages(data-bind="foreach: messages")
           li.message
-            span(data-bind="text: text")
+            span.nickname(data-bind="text: nickname")
+            span.content(data-bind="text: message")
     div.col-lg-4
       h2 Users
+      div
+        ul#users(data-bind="foreach: users")
+          li.user
+            span(data-bind="text: nickname")
   div.message-bar
     div.container
       form.message-form(data-bind="submit: submitMessage", role="form")
