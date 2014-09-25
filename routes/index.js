@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'chatApp' });
+  res.render('index', { title: 'knockoutjs-socket-node-chat' });
 });
 
 module.exports = router;
